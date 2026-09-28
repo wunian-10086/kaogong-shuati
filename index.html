@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#f6f7f9">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="考公刷题机">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icons/icon-192.png">
+<title>考公刷题机</title>
+<link rel="stylesheet" href="styles.css?v=5">
+</head>
+<body>
+<div id="app">
+  <header id="topbar">
+    <button id="backBtn" class="icon-btn hidden" title="返回">‹</button>
+    <div id="topTitle">考公刷题机</div>
+    <div id="topRight" class="top-right"></div>
+  </header>
+
+  <div id="tabsWrap">
+    <nav id="subjectTabs"></nav>
+  </div>
+
+  <main id="view">
+    <div class="empty" style="padding:36px 12px;text-align:center;color:#6b7280;font-size:14px;line-height:1.9">
+      正在加载题库…<br>
+      <span style="font-size:12px;color:#9aa1ab">首次打开需要下载约 10MB 数据（之后会缓存，秒开）</span>
+    </div>
+  </main>
+
+  <nav id="bottomNav">
+    <button data-route="#/" class="nav-item active"><span class="nav-ico">▤</span>题库</button>
+    <button data-route="#/wrong" class="nav-item"><span class="nav-ico">✗</span>错题本</button>
+    <button data-route="#/fav" class="nav-item"><span class="nav-ico">★</span>收藏</button>
+    <button data-route="#/history" class="nav-item"><span class="nav-ico">◷</span>记录</button>
+    <button data-route="#/me" class="nav-item"><span class="nav-ico">☰</span>我的</button>
+  </nav>
+</div>
+
+<div id="sheet" class="sheet hidden">
+  <div class="sheet-mask" data-close="1"></div>
+  <div class="sheet-body">
+    <div class="sheet-head"><b id="sheetTitle">标题</b><button class="icon-btn" data-close="1">✕</button></div>
+    <div id="sheetContent" class="sheet-content"></div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="data/meta.js"></script>
+<script src="data/bankmap.js"></script>
+<script src="data/bankfiles.js"></script>
+<script src="data/rules.js"></script>
+<script src="data/catalog.js"></script>
+<script src="engine-local.js"></script>
+<script src="app.js"></script>
+<script>
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+// updateViaCache:'none' + update() 保证发布新版本后不会被旧的 HTTP/SW 缓存挡住
+navigator.serviceWorker.register("sw.js", { updateViaCache: "none" })
+  .then(function (reg) { reg.update().catch(function () {}); })
+  .catch(function () {});
+}
+
+// 防呆：如果 app.js / 样式表没加载成功（例如直接在压缩包里双击 index.html），
+// 给出明确的中文提示，而不是让用户看到空白页。
+(function () {
+  function showHelp(msg, detail) {
+    var view = document.getElementById("view");
+    if (!view) return;
+    view.innerHTML =
+      '<div style="padding:18px 6px;line-height:1.9;font-size:15px">' +
+      '<div style="font-weight:700;font-size:17px;margin-bottom:8px">' + msg + "</div>" +
+      '<div style="color:#555">' + (detail || "") + "</div>" +
+      '<div style="margin-top:16px;padding:12px;background:#eef3ff;border-radius:12px;color:#1f2b45">' +
+      "<b>正确用法：</b><br>1. 右键这个压缩包 →「解压全部 / 全部解压缩」；<br>" +
+      "2. 打开解压出来的文件夹，双击里面的 <b>index.html</b>；<br>" +
+      "3. 手机上：解压后的文件夹用浏览器打开 index.html，或点「添加到主屏幕」。" +
+      "</div></div>";
+  }
+  window.addEventListener("load", function () {
+    setTimeout(function () {
+      var view = document.getElementById("view");
+      var scriptOk = typeof window.__STATIC__ !== "undefined" || typeof window.__APP_VERSION !== "undefined" || !!window.__localApi;
+      if (!scriptOk) {
+        showHelp("程序脚本没有加载", "app.js 或样式没有跟着一起解压出来。请确认 app.js、data 文件夹和 index.html 在同一个目录里。");
+        return;
+      }
+      if (view && view.innerText.indexOf("正在加载题库") >= 0 && (window.__BANKS__ || []).length === 0) {
+        showHelp("题库数据没有加载出来", "题库数据文件（data 文件夹）没有跟着 index.html 一起解压。");
+      }
+    }, 5000);
+  });
+})();
+</script>
+</body>
+</html>
+

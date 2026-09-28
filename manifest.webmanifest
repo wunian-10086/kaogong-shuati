@@ -1,0 +1,16 @@
+{
+  "name": "考公刷题机",
+  "short_name": "考公刷题",
+  "description": "国考/省考刷题：真题、行测5000题、申论100题，支持错题本、收藏、计时与申论判分",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f5f6f8",
+  "theme_color": "#2f6bff",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
